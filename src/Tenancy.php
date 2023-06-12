@@ -77,9 +77,7 @@ class Tenancy
     public function getBootstrappers(): array
     {
         // If no callback for getting bootstrappers is set, we just return all of them.
-        $resolve = $this->getBootstrappersUsing ?? function (Tenant $tenant) {
-            return config('tenancy.bootstrappers');
-        };
+        $resolve = $this->getBootstrappersUsing ?? fn(Tenant $tenant) => config('tenancy.bootstrappers');
 
         // Here We instantiate the bootstrappers and return them.
         return array_map('app', $resolve($this->tenant));
@@ -107,7 +105,6 @@ class Tenancy
      * Run a callback in the central context.
      * Atomic, safely reverts to previous context.
      *
-     * @param callable $callback
      * @return mixed
      */
     public function central(callable $callback)
@@ -132,7 +129,6 @@ class Tenancy
      * More performant than running $tenant->run() one by one.
      *
      * @param Tenant[]|\Traversable|string[]|null $tenants
-     * @param callable $callback
      * @return void
      */
     public function runForMultiple($tenants, callable $callback)

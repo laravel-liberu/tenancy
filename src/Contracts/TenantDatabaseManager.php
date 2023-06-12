@@ -21,7 +21,6 @@ interface TenantDatabaseManager
     /**
      * Does a database exist.
      *
-     * @param string $name
      * @return bool
      */
     public function databaseExists(string $name): bool;
@@ -29,8 +28,6 @@ interface TenantDatabaseManager
     /**
      * Make a DB connection config array.
      *
-     * @param array $baseConfig
-     * @param string $databaseName
      * @return array
      */
     public function makeConnectionConfig(array $baseConfig, string $databaseName): array;
@@ -40,7 +37,6 @@ interface TenantDatabaseManager
      *
      * @throws NoConnectionSetException
      *
-     * @param string $connection
      * @return void
      */
     public function setConnection(string $connection): void;

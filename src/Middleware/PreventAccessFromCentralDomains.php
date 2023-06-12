@@ -19,7 +19,7 @@ class PreventAccessFromCentralDomains
     public function handle(Request $request, Closure $next)
     {
         if (in_array($request->getHost(), config('tenancy.central_domains'))) {
-            $abortRequest = static::$abortRequest ?? function () {
+            $abortRequest = static::$abortRequest ?? function (): never {
                 abort(404);
             };
 

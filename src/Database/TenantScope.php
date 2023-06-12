@@ -22,8 +22,6 @@ class TenantScope implements Scope
 
     public function extend(Builder $builder)
     {
-        $builder->macro('withoutTenancy', function (Builder $builder) {
-            return $builder->withoutGlobalScope($this);
-        });
+        $builder->macro('withoutTenancy', fn(Builder $builder) => $builder->withoutGlobalScope($this));
     }
 }

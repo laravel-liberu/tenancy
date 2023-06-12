@@ -13,7 +13,7 @@ class SQLiteDatabaseManager implements TenantDatabaseManager
     {
         try {
             return file_put_contents(database_path($tenant->database()->getName()), '');
-        } catch (\Throwable $th) {
+        } catch (\Throwable) {
             return false;
         }
     }
@@ -22,7 +22,7 @@ class SQLiteDatabaseManager implements TenantDatabaseManager
     {
         try {
             return unlink(database_path($tenant->database()->getName()));
-        } catch (\Throwable $th) {
+        } catch (\Throwable) {
             return false;
         }
     }

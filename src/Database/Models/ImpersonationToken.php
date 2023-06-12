@@ -35,9 +35,9 @@ class ImpersonationToken extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            $model->created_at = $model->created_at ?? $model->freshTimestamp();
-            $model->token = $model->token ?? Str::random(128);
-            $model->auth_guard = $model->auth_guard ?? config('auth.defaults.guard');
+            $model->created_at ??= $model->freshTimestamp();
+            $model->token ??= Str::random(128);
+            $model->auth_guard ??= config('auth.defaults.guard');
         });
     }
 }

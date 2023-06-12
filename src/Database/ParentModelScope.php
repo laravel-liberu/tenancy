@@ -21,8 +21,6 @@ class ParentModelScope implements Scope
 
     public function extend(Builder $builder)
     {
-        $builder->macro('withoutParentModel', function (Builder $builder) {
-            return $builder->withoutGlobalScope($this);
-        });
+        $builder->macro('withoutParentModel', fn(Builder $builder) => $builder->withoutGlobalScope($this));
     }
 }

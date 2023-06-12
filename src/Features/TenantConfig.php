@@ -51,12 +51,12 @@ class TenantConfig implements Feature
             if (! is_null($override)) {
                 if (is_array($configKey)) {
                     foreach ($configKey as $key) {
-                        $this->originalConfig[$key] = $this->originalConfig[$key] ?? $this->config[$key];
+                        $this->originalConfig[$key] ??= $this->config[$key];
 
                         $this->config[$key] = $override;
                     }
                 } else {
-                    $this->originalConfig[$configKey] = $this->originalConfig[$configKey] ?? $this->config[$configKey];
+                    $this->originalConfig[$configKey] ??= $this->config[$configKey];
 
                     $this->config[$configKey] = $override;
                 }

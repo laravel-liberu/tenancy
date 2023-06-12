@@ -18,21 +18,18 @@ class UserImpersonation implements Feature
 
     public function bootstrap(Tenancy $tenancy): void
     {
-        $tenancy->macro('impersonate', function (Tenant $tenant, string $userId, string $redirectUrl, string $authGuard = null): ImpersonationToken {
-            return ImpersonationToken::create([
-                'tenant_id' => $tenant->getTenantKey(),
-                'user_id' => $userId,
-                'redirect_url' => $redirectUrl,
-                'auth_guard' => $authGuard,
-            ]);
-        });
+        $tenancy->macro('impersonate', fn(Tenant $tenant, string $userId, string $redirectUrl, string $authGuard = null): ImpersonationToken => ImpersonationToken::create([
+            'tenant_id' => $tenant->getTenantKey(),
+            'user_id' => $userId,
+            'redirect_url' => $redirectUrl,
+            'auth_guard' => $authGuard,
+        ]));
     }
 
     /**
      * Impersonate a user and get an HTTP redirect response.
      *
      * @param string|ImpersonationToken $token
-     * @param int $ttl
      * @return RedirectResponse
      */
     public static function makeResponse($token, int $ttl = null): RedirectResponse
@@ -43,7 +40,7 @@ class UserImpersonation implements Feature
             abort(403);
         }
 
-        $ttl = $ttl ?? static::$ttl;
+        $ttl ??= static::$ttl;
 
         if ($token->created_at->diffInSeconds(Carbon::now()) > $ttl) {
             abort(403);

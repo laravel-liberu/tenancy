@@ -26,7 +26,7 @@ abstract class IdentificationMiddleware
                 $this->resolver->resolve(...$resolverArguments)
             );
         } catch (TenantCouldNotBeIdentifiedException $e) {
-            $onFail = static::$onFail ?? function ($e) {
+            $onFail = static::$onFail ?? function ($e): never {
                 throw $e;
             };
 

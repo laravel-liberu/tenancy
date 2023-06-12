@@ -28,17 +28,11 @@ class DatabaseConfig
 
     public static function __constructStatic(): void
     {
-        static::$usernameGenerator = static::$usernameGenerator ?? function (Tenant $tenant) {
-            return Str::random(16);
-        };
+        static::$usernameGenerator ??= fn(Tenant $tenant) => Str::random(16);
 
-        static::$passwordGenerator = static::$passwordGenerator ?? function (Tenant $tenant) {
-            return Hash::make(Str::random(32));
-        };
+        static::$passwordGenerator ??= fn(Tenant $tenant) => Hash::make(Str::random(32));
 
-        static::$databaseNameGenerator = static::$databaseNameGenerator ?? function (Tenant $tenant) {
-            return config('tenancy.database.prefix') . $tenant->getTenantKey() . config('tenancy.database.suffix');
-        };
+        static::$databaseNameGenerator ??= fn(Tenant $tenant) => config('tenancy.database.prefix') . $tenant->getTenantKey() . config('tenancy.database.suffix');
     }
 
     public function __construct(Tenant $tenant)
@@ -122,9 +116,7 @@ class DatabaseConfig
      */
     public function tenantConfig(): array
     {
-        $dbConfig = array_filter(array_keys($this->tenant->getAttributes()), function ($key) {
-            return Str::startsWith($key, $this->tenant->internalPrefix() . 'db_');
-        });
+        $dbConfig = array_filter(array_keys($this->tenant->getAttributes()), fn($key) => Str::startsWith($key, $this->tenant->internalPrefix() . 'db_'));
 
         // Remove DB name because we set that separately
         if (($pos = array_search($this->tenant->internalPrefix() . 'db_name', $dbConfig)) !== false) {
@@ -136,11 +128,9 @@ class DatabaseConfig
             unset($dbConfig[$pos]);
         }
 
-        return array_reduce($dbConfig, function ($config, $key) {
-            return array_merge($config, [
-                Str::substr($key, strlen($this->tenant->internalPrefix() . 'db_')) => $this->tenant->getAttribute($key),
-            ]);
-        }, []);
+        return array_reduce($dbConfig, fn($config, $key) => array_merge($config, [
+            Str::substr($key, strlen($this->tenant->internalPrefix() . 'db_')) => $this->tenant->getAttribute($key),
+        ]), []);
     }
 
     /**

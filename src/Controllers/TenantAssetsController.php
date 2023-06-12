@@ -9,7 +9,7 @@ use Throwable;
 
 class TenantAssetsController extends Controller
 {
-    public static $tenancyMiddleware = 'Stancl\Tenancy\Middleware\InitializeTenancyByDomain';
+    public static $tenancyMiddleware = \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class;
 
     public function __construct()
     {
@@ -22,7 +22,7 @@ class TenantAssetsController extends Controller
 
         try {
             return response()->file(storage_path("app/public/$path"));
-        } catch (Throwable $th) {
+        } catch (Throwable) {
             abort(404);
         }
     }

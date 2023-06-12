@@ -33,7 +33,7 @@ class UpdateSyncedResource extends QueueableListener
     {
         if (! $centralModel instanceof SyncMaster) {
             // If we're trying to use a tenant User model instead of the central User model, for example.
-            throw new ModelNotSyncMasterException(get_class($centralModel));
+            throw new ModelNotSyncMasterException($centralModel::class);
         }
 
         /** @var SyncMaster|Model $centralModel */
@@ -66,9 +66,7 @@ class UpdateSyncedResource extends QueueableListener
         });
 
         // If the model was just created, the mapping of the tenant to the user likely doesn't exist, so we create it.
-        $currentTenantMapping = function ($model) use ($event) {
-            return ((string) $model->pivot->tenant_id) === ((string) $event->tenant->getTenantKey());
-        };
+        $currentTenantMapping = fn($model) => ((string) $model->pivot->tenant_id) === ((string) $event->tenant->getTenantKey());
 
         $mappingExists = $centralModel->tenants->contains($currentTenantMapping);
 
@@ -80,10 +78,9 @@ class UpdateSyncedResource extends QueueableListener
             });
         }
 
-        return $centralModel->tenants->filter(function ($model) use ($currentTenantMapping) {
+        return $centralModel->tenants->filter(fn($model) =>
             // Remove the mapping for the current tenant.
-            return ! $currentTenantMapping($model);
-        });
+            ! $currentTenantMapping($model));
     }
 
     protected function updateResourceInTenantDatabases($tenants, $event, $syncedAttributes)
@@ -98,7 +95,7 @@ class UpdateSyncedResource extends QueueableListener
                 // If event model comes from central DB, we get the tenant model name to run the query
                 $localModelClass = $eventModel->getTenantModelName();
             } else {
-                $localModelClass = get_class($eventModel);
+                $localModelClass = $eventModel::class;
             }
 
             /** @var Model|null */

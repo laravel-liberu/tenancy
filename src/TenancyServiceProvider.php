@@ -37,13 +37,9 @@ class TenancyServiceProvider extends ServiceProvider
         });
 
         // Make it possible to inject the current tenant by typehinting the Tenant contract.
-        $this->app->bind(Tenant::class, function ($app) {
-            return $app[Tenancy::class]->tenant;
-        });
+        $this->app->bind(Tenant::class, fn($app) => $app[Tenancy::class]->tenant);
 
-        $this->app->bind(Domain::class, function () {
-            return DomainTenantResolver::$currentDomain;
-        });
+        $this->app->bind(Domain::class, fn() => DomainTenantResolver::$currentDomain);
 
         // Make sure bootstrappers are stateful (singletons).
         foreach ($this->app['config']['tenancy.bootstrappers'] ?? [] as $bootstrapper) {
@@ -59,20 +55,12 @@ class TenancyServiceProvider extends ServiceProvider
             $this->app->bind(Contracts\UniqueIdentifierGenerator::class, $this->app['config']['tenancy.id_generator']);
         }
 
-        $this->app->singleton(Commands\Migrate::class, function ($app) {
-            return new Commands\Migrate($app['migrator'], $app['events']);
-        });
-        $this->app->singleton(Commands\Rollback::class, function ($app) {
-            return new Commands\Rollback($app['migrator']);
-        });
+        $this->app->singleton(Commands\Migrate::class, fn($app) => new Commands\Migrate($app['migrator'], $app['events']));
+        $this->app->singleton(Commands\Rollback::class, fn($app) => new Commands\Rollback($app['migrator']));
 
-        $this->app->singleton(Commands\Seed::class, function ($app) {
-            return new Commands\Seed($app['db']);
-        });
+        $this->app->singleton(Commands\Seed::class, fn($app) => new Commands\Seed($app['db']));
 
-        $this->app->bind('globalCache', function ($app) {
-            return new CacheManager($app);
-        });
+        $this->app->bind('globalCache', fn($app) => new CacheManager($app));
     }
 
     /**

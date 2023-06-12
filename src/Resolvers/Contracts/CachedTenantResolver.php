@@ -63,7 +63,7 @@ abstract class CachedTenantResolver implements TenantResolver
 
     public function getCacheKey(...$args): string
     {
-        return '_tenancy_resolver:' . static::class . ':' . json_encode($args);
+        return '_tenancy_resolver:' . static::class . ':' . json_encode($args, JSON_THROW_ON_ERROR);
     }
 
     abstract public function resolveWithoutCache(...$args): Tenant;
@@ -75,7 +75,6 @@ abstract class CachedTenantResolver implements TenantResolver
     /**
      * Get all the arg combinations for resolve() that can be used to find this tenant.
      *
-     * @param Tenant $tenant
      * @return array[]
      */
     abstract public function getArgsForTenant(Tenant $tenant): array;

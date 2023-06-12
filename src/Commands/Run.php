@@ -35,13 +35,11 @@ class Run extends Command
         tenancy()->runForMultiple($this->option('tenants'), function ($tenant) {
             $this->line("Tenant: {$tenant->getTenantKey()}");
 
-            $callback = function ($prefix = '') {
-                return function ($arguments, $argument) use ($prefix) {
-                    [$key, $value] = explode('=', $argument, 2);
-                    $arguments[$prefix . $key] = $value;
+            $callback = fn($prefix = '') => function ($arguments, $argument) use ($prefix) {
+                [$key, $value] = explode('=', $argument, 2);
+                $arguments[$prefix . $key] = $value;
 
-                    return $arguments;
-                };
+                return $arguments;
             };
 
             // Turns ['foo=bar', 'abc=xyz=zzz'] into ['foo' => 'bar', 'abc' => 'xyz=zzz']

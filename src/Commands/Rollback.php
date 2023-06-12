@@ -49,7 +49,7 @@ class Rollback extends RollbackCommand
     {
         foreach (config('tenancy.migration_parameters') as $parameter => $value) {
             if (! $this->input->hasParameterOption($parameter)) {
-                $this->input->setOption(ltrim($parameter, '-'), $value);
+                $this->input->setOption(ltrim((string) $parameter, '-'), $value);
             }
         }
 

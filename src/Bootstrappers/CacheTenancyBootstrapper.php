@@ -28,19 +28,15 @@ class CacheTenancyBootstrapper implements TenancyBootstrapper
     {
         $this->resetFacadeCache();
 
-        $this->originalCache = $this->originalCache ?? $this->app['cache'];
-        $this->app->extend('cache', function () {
-            return new TenantCacheManager($this->app);
-        });
+        $this->originalCache ??= $this->app['cache'];
+        $this->app->extend('cache', fn() => new TenantCacheManager($this->app));
     }
 
     public function revert()
     {
         $this->resetFacadeCache();
 
-        $this->app->extend('cache', function () {
-            return $this->originalCache;
-        });
+        $this->app->extend('cache', fn() => $this->originalCache);
 
         $this->originalCache = null;
     }
